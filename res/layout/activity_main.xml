@@ -8,5 +8,15 @@
     <com.boyu100.snfc.uis.ProgressWebView android:id="@+id/webView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-
+    
+    <Button 
+        android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/action"
+		android:layout_alignParentBottom="true"
+		android:layout_centerHorizontal="true"
+		android:layout_margin="12dp"
+		android:text="action"
+        />
+    
 </RelativeLayout>

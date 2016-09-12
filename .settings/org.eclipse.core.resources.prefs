@@ -1,4 +1,9 @@
 eclipse.preferences.version=1
-encoding//src/com/boyu100/snfc/MainActivity.java=gbk
+encoding//src/com/boyu100/snfc/WebViewActivity.java=gbk
+encoding//src/com/boyu100/snfc/http/HttpUtil.java=UTF-8
+encoding//src/com/boyu100/snfc/wechat/WeiChatLoginHandlerImpl.java=UTF-8
+encoding//src/com/third/data/ThirdDataProvieder.java=UTF-8
+encoding//src/com/third/weichat/WeiChatShareManager.java=UTF-8
+encoding//src/com/uuzuche/lib_zxing=UTF-8
 encoding/<project>=gbk
 encoding/pjUserApp=UTF-8

@@ -60,10 +60,10 @@ public class WebViewActivity extends BaseActivity {
 		 Log.i("user-agent", mWebView.getSettings().getUserAgentString());
 		 
 		 findViewById(R.id.action).setOnClickListener(new OnClickListener() {
-			
 			@Override
 			public void onClick(View v) {
-		        mWeChatLoginManager.login();
+//		        mWeChatLoginManager.login();
+				wxShare(0, "title", "content", "http://www.baidu.com","https://www.baidu.com/img/bd_logo1.png");
 			}
 		});
 		 
@@ -79,6 +79,9 @@ public class WebViewActivity extends BaseActivity {
 			public void jsBridgeLogin() {
 				ToastUtils.showShortToast("I am in Login Action");
 				mWeChatLoginManager.login();
+				
+				//private void wxShare(int type, String title, String content, String url, String imageUrl)
+//				wxShare(0, "title", "content", "http://www.baidu.com","https://www.baidu.com/img/bd_logo1.png");
 			}
 
 			/**
@@ -168,11 +171,7 @@ public class WebViewActivity extends BaseActivity {
 	  
 	  	@Override
 	    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-	        /**
-	         * 处理二维码扫描结果
-	         */
 	        if (requestCode == REQUEST_CODE) {
-	            //处理扫描结果（在界面上显示）
 	            if (null != data) {
 	                Bundle bundle = data.getExtras();
 	                if (bundle == null) {
@@ -180,19 +179,11 @@ public class WebViewActivity extends BaseActivity {
 	                }
 	                if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_SUCCESS) {
 	                    String result = bundle.getString(CodeUtils.RESULT_STRING);
-	                    Toast.makeText(this, "解析结果:" + result, Toast.LENGTH_LONG).show();
 	                    mWebView.loadUrl("javascript:jsBridgeRedirect("+ result +")");
 	                } else if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_FAILED) {
 	                    Toast.makeText(WebViewActivity.this, "解析二维码失败", Toast.LENGTH_LONG).show();
 	                }
 	            }
 	        }
-	       
 	    }
-	  	
-	  	@Override
-	  	protected void onResume() {
-	  		super.onResume();
-	  		mWebView.loadUrl("javascript:isAndroidApp()");
-	  	}
 }

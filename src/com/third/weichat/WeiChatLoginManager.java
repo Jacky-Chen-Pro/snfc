@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.boyu100.snfc.R;
+import com.boyu100.snfc.utils.ToastUtils;
 import com.tencent.mm.sdk.modelmsg.SendAuth;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
@@ -17,12 +18,9 @@ import com.third.data.ThirdDataProvieder;
 public class WeiChatLoginManager {
 
     private static final String SCOPE = "snsapi_userinfo";
-
     private static final String STATE = "lls_engzo_wechat_login";
 
-
     private String mWeChatAppId;
-
     private static IWXAPI mIWXAPI;
 
     public WeiChatLoginManager(Context context) {
@@ -38,7 +36,6 @@ public class WeiChatLoginManager {
         }
     }
 
-
     public static IWXAPI getIWXAPI() {
         return mIWXAPI;
     }
@@ -49,7 +46,8 @@ public class WeiChatLoginManager {
             final SendAuth.Req req = new SendAuth.Req();
             req.scope = SCOPE;
             req.state = STATE;
-            mIWXAPI.sendReq(req);
+            boolean isSendReqSuccess = mIWXAPI.sendReq(req);
+            ToastUtils.showShortToast("¹þ¹þ¹þ");
         }
     }
 }

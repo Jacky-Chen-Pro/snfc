@@ -6,6 +6,7 @@ import android.widget.Toast;
 import com.boyu100.snfc.base.AppContext;
 import com.boyu100.snfc.http.HttpUtil;
 import com.boyu100.snfc.http.OnResultListener;
+import com.boyu100.snfc.utils.ToastUtils;
 import com.third.weichat.WeiChatLoginHandler;
 
 import org.json.JSONException;

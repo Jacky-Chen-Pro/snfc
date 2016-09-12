@@ -57,15 +57,8 @@
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
-      
-      
-        <!--微信-->
-        <activity
-            android:name=".wxapi.WXEntryActivity"
-            android:exported="true"
-            android:label="@string/app_name"/>
         
-        
+      <activity android:name=".wxapi.WXEntryActivity" android:exported="true"/>
     </application>
 
 </manifest>

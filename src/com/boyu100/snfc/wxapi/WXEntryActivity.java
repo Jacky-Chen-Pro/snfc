@@ -4,6 +4,7 @@ package com.boyu100.snfc.wxapi;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.boyu100.snfc.utils.ToastUtils;
 import com.boyu100.snfc.wechat.WeiChatLoginHandlerImpl;
 import com.tencent.mm.sdk.modelbase.BaseResp;
 import com.third.weichat.WechatHandlerActivity;

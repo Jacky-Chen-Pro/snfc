@@ -46,8 +46,7 @@ public class WeiChatLoginManager {
             final SendAuth.Req req = new SendAuth.Req();
             req.scope = SCOPE;
             req.state = STATE;
-            boolean isSendReqSuccess = mIWXAPI.sendReq(req);
-            ToastUtils.showShortToast("¹þ¹þ¹þ");
+            mIWXAPI.sendReq(req);
         }
     }
 }

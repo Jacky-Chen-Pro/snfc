@@ -9,6 +9,7 @@ public class Constants {
     /**
      * snfc wechat id and key
      */
-    public static final String WECHAT_APP_ID = "wxb0b79f2db57ddd6c";
-    public static final String WECHAT_APP_SECRET = "2068e0589d326ac00c86d1f0b02f56b2";
+    public static final String WECHAT_APP_ID = "wx5413f7fcc5cd9158";
+    public static final String WECHAT_APP_SECRET = "02d966276d3d33d5af39dd2e5b608294";
+    public static final String WECHAT_LOGIN_CODE = "wechat_login_code";
 }

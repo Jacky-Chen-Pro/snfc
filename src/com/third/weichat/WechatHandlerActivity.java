@@ -58,7 +58,7 @@ public abstract class WechatHandlerActivity extends FragmentActivity implements 
                     final String code = ((SendAuth.Resp) resp).code;
                     PreferencesUtils.putString(mContext, Constants.WECHAT_LOGIN_CODE, code);
                     sendBroadcast(new Intent(WebViewActivity.FILTER_LOGIN_BROADCAST));
-                    getWeiChatLoginHandler().onReceiveAuthCode(code);
+//                    getWeiChatLoginHandler().onReceiveAuthCode(code);
                     finish();
                 } else {
                     onShareSuccess();

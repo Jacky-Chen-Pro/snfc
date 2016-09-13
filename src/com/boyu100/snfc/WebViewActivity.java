@@ -105,24 +105,26 @@ public class WebViewActivity extends BaseActivity{
 		mWebView = (ProgressWebView) findViewById(R.id.webView);
 		setWebView();
 		 
-		findViewById(R.id.action).setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				ShareContent content = new ShareContent();
-				content.setTitle("share title");
-				content.setURL("http://www.baidu.com");
-				content.setShareImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
-				content.setContent("share content");
-				mWeChatShareManager.share(content, 0, ShareType.WEBPAGE);
-//				mWeChatLoginManager.login();
-			}
-		});
+//		findViewById(R.id.action).setOnClickListener(new OnClickListener() {
+//			@Override
+//			public void onClick(View v) {
+//				ShareContent content = new ShareContent();
+//				content.setTitle("share title");
+//				content.setURL("http://www.baidu.com");
+//				content.setShareImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
+//				content.setContent("share content");
+//				mWeChatShareManager.share(content, 0, ShareType.WEBPAGE);
+//				String url = "我是Jacky~~~";
+//                mWebView.loadUrl("javascript:jsBridgeTest('"+url+"')");
+//			}
+//		});
 		 
 		ThirdDataProvieder.initWechat(Constants.WECHAT_APP_ID, Constants.WECHAT_APP_SECRET);
         mWeChatShareManager = new WeiChatShareManager(this);
         mWeChatLoginManager = new WeiChatLoginManager(this);
 
 		mWebView.addJavascriptInterface(new Object(){
+			
 			@JavascriptInterface
 			public void jsBridgeLogin() {
 				mWeChatLoginManager.login();
@@ -133,8 +135,13 @@ public class WebViewActivity extends BaseActivity{
 			 * 2.分享的标题，内容，图片和链接需要通过方法传递给我
 			 */
 			@JavascriptInterface
-			public void jsBridgeShare(int type, String title, String content, String url, String imageUrl) {
-				ToastUtils.showShortToast("I am in Share Action");
+			public void jsBridgeShare(String type, String title, String content1, String url) {
+				ShareContent content = new ShareContent();
+				content.setTitle(title);
+				content.setURL(url);
+				content.setShareImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
+				content.setContent(content1);
+				mWeChatShareManager.share(content, Integer.parseInt(type), ShareType.WEBPAGE);
 			}
 
 			@JavascriptInterface
@@ -164,7 +171,7 @@ public class WebViewActivity extends BaseActivity{
 	
   	@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CODE) {
+        if (requestCode == REQUEST_CODE) {  
             if (null != data) {
                 Bundle bundle = data.getExtras();
                 if (bundle == null) {
@@ -173,7 +180,7 @@ public class WebViewActivity extends BaseActivity{
                 
                 if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_SUCCESS) {
                     String result = bundle.getString(CodeUtils.RESULT_STRING);
-                    mWebView.loadUrl("javascript:jsBridgeRedirect("+ result +")");
+                    mWebView.loadUrl("javascript:jsBridgeRedirect('"+ result +"')");
                 } else if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_FAILED) {
                     Toast.makeText(WebViewActivity.this, "解析二维码失败", Toast.LENGTH_LONG).show();
                 }
@@ -191,7 +198,7 @@ public class WebViewActivity extends BaseActivity{
   	}
   	
   	@Override
-  	protected void onStart() {
+  	protected void onStart() {	
   		super.onStart();
   		registerLoginBroadcast();
   	}
@@ -199,17 +206,18 @@ public class WebViewActivity extends BaseActivity{
   	@Override
   	protected void onDestroy() {
   		super.onDestroy();
-  		if(mLoginBroadcast!= null) 
+  		if(mLoginBroadcast!= null)  {
   			unregisterReceiver(mLoginBroadcast);
+  		}
   	}
   	
   	class WechatLoginBroadcast extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context arg0, Intent arg1) {
 			String code = PreferencesUtils.getString(WebViewActivity.this, Constants.WECHAT_LOGIN_CODE, "-1");
-			ToastUtils.showShortToast("微信登陆code:" + code);
+//			ToastUtils.showShortToast("微信登陆code:" + code);
 			if(!code.equals("-1")) {
-                mWebView.loadUrl("javascript:jsBridgeLoginReturn("+ code +")");
+                mWebView.loadUrl("javascript:jsBridgeLoginReturn('"+ code +"')");
 			}
 		}
   		

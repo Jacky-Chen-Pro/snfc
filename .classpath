@@ -5,7 +5,6 @@
 	<classpathentry kind="lib" path="libs/libammsdk.jar"/>
 	<classpathentry kind="lib" path="libs/zxing.jar"/>
 	<classpathentry kind="src" path="gen"/>
-	<classpathentry kind="lib" path="C:/A-sdk_eclipse/sdk/platforms/android-23/android.jar"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>

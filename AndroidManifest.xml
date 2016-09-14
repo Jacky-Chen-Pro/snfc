@@ -34,6 +34,7 @@
         android:name="com.boyu100.snfc.base.AppContext"
         android:theme="@android:style/Theme.NoTitleBar" >
         <activity
+            android:screenOrientation="portrait"
             android:name="com.boyu100.snfc.WebViewActivity"
             >
             <intent-filter>

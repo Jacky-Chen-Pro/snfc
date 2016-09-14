@@ -1,5 +1,8 @@
 package com.boyu100.snfc;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.boyu100.snfc.R;
 import com.boyu100.snfc.base.BaseActivity;
 import com.boyu100.snfc.base.Constants;
@@ -16,6 +19,7 @@ import com.third.data.ShareType;
 import com.third.data.ThirdDataProvieder;
 import com.third.model.ShareContent;
 import com.third.weichat.WeiChatLoginManager;
+import com.third.weichat.WeiChatPayManager;
 import com.third.weichat.WeiChatShareManager;
 import com.uuzuche.lib_zxing.activity.CaptureActivity;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
@@ -28,6 +32,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -41,17 +46,19 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 public class WebViewActivity extends BaseActivity{
-	ProgressWebView mWebView;
-	
+	WebView mWebView;
+	ProgressBar mProgressBar;
 	/**
      * 扫描跳转Activity RequestCode
      */
     public static final int REQUEST_CODE = 111;
     private WeiChatShareManager mWeChatShareManager;
     private WeiChatLoginManager mWeChatLoginManager;
+    private WeiChatPayManager mWeChatPayManager;
     
     private void setWebView() {
     	WebSettings settings = mWebView.getSettings();
@@ -79,6 +86,18 @@ public class WebViewActivity extends BaseActivity{
 				view.loadUrl(url);
 				return true;
 			}
+			
+			@Override
+			public void onPageStarted(WebView view, String url, Bitmap favicon) {
+				super.onPageStarted(view, url, favicon);
+				mProgressBar.setVisibility(View.VISIBLE);
+			}
+			
+			@Override
+			public void onPageFinished(WebView view, String url) {
+				super.onPageFinished(view, url);
+				mProgressBar.setVisibility(View.GONE);
+			}
 		});
 
 		mWebView.setWebChromeClient(new WebChromeClient() {
@@ -102,27 +121,15 @@ public class WebViewActivity extends BaseActivity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		mWebView = (ProgressWebView) findViewById(R.id.webView);
+		mWebView = (WebView) findViewById(R.id.webView);
+		mProgressBar = (ProgressBar) findViewById(R.id.pb_loading);
 		setWebView();
-		 
-//		findViewById(R.id.action).setOnClickListener(new OnClickListener() {
-//			@Override
-//			public void onClick(View v) {
-//				ShareContent content = new ShareContent();
-//				content.setTitle("share title");
-//				content.setURL("http://www.baidu.com");
-//				content.setShareImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
-//				content.setContent("share content");
-//				mWeChatShareManager.share(content, 0, ShareType.WEBPAGE);
-//				String url = "我是Jacky~~~";
-//                mWebView.loadUrl("javascript:jsBridgeTest('"+url+"')");
-//			}
-//		});
 		 
 		ThirdDataProvieder.initWechat(Constants.WECHAT_APP_ID, Constants.WECHAT_APP_SECRET);
         mWeChatShareManager = new WeiChatShareManager(this);
         mWeChatLoginManager = new WeiChatLoginManager(this);
-
+        mWeChatPayManager = new WeiChatPayManager(this);
+        
 		mWebView.addJavascriptInterface(new Object(){
 			
 			@JavascriptInterface
@@ -152,11 +159,24 @@ public class WebViewActivity extends BaseActivity{
 			}
 
 			@JavascriptInterface
-			public void jsBridgePay() {
+			public void jsBridgePay(String prepayId) {
 				ToastUtils.showShortToast("I am in pay Action");
+				/**
+				 * 微信支付的一些参数：
+				 * 	IWXAPI api;
+					PayReq request = new PayReq();
+					request.appId = "wxd930ea5d5a258f4f";
+					request.partnerId = "1900000109";
+					request.prepayId= "1101000000140415649af9fc314aa427",;
+					request.packageValue = "Sign=WXPay";
+					request.nonceStr= "1101000000140429eb40476f8896f4c9";
+					request.timeStamp= "1398746574";
+					request.sign= "7FFECB600D7157C5AA49810D2D8F28BC2811827B";
+					api.sendReq(req);
+				 */
+				mWeChatPayManager.pay(prepayId);
 			}
 		}, "jsApi");
-
 		mWebView.loadUrl("http://123.206.201.153/h5/");
 	}
 
@@ -165,9 +185,25 @@ public class WebViewActivity extends BaseActivity{
 		if (mWebView != null && keyCode == KeyEvent.KEYCODE_BACK && mWebView.canGoBack()) {
 			mWebView.goBack();
 			return true;
-		}
+		} 
 		return super.onKeyDown(keyCode, event);
 	}
+	
+//    private long exitTime = 0;
+//
+//   @Override
+//    public boolean onKeyDown(int keyCode, KeyEvent event) {
+//        if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN){
+//            if((System.currentTimeMillis()-exitTime) > 2000){
+//                exitTime = System.currentTimeMillis();
+//            } else {
+//                finish();
+//                System.exit(0);
+//            }
+//            return true;
+//        }
+//        return super.onKeyDown(keyCode, event);
+//    }
 	
   	@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -180,7 +216,16 @@ public class WebViewActivity extends BaseActivity{
                 
                 if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_SUCCESS) {
                     String result = bundle.getString(CodeUtils.RESULT_STRING);
-                    mWebView.loadUrl("javascript:jsBridgeRedirect('"+ result +"')");
+                    
+                    if(result.contains("shop.sunyoo51")) {
+                        mWebView.loadUrl("javascript:jsBridgeRedirect('"+ result +"')");
+                    }else {
+                        Intent intent = new Intent();        
+                        intent.setAction("android.intent.action.VIEW");    
+                        Uri url = Uri.parse(result);   
+                        intent.setData(url);  
+                        startActivity(intent);
+                    }
                 } else if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_FAILED) {
                     Toast.makeText(WebViewActivity.this, "解析二维码失败", Toast.LENGTH_LONG).show();
                 }
@@ -222,4 +267,21 @@ public class WebViewActivity extends BaseActivity{
 		}
   		
   	}
+  	
+  	/**
+  	 * 正则判断是否是站内链接
+  	 * @param reg
+  	 * @param string
+  	 * @return
+  	 */
+    private boolean startCheck(String reg,String string)  
+    {  
+        boolean tem=false;  
+          
+        Pattern pattern = Pattern.compile(reg);  
+        Matcher matcher=pattern.matcher(string);  
+          
+        tem=matcher.matches();  
+        return tem;  
+    }  
 }
